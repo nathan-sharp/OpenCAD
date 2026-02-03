@@ -1,0 +1,42 @@
+{
+  "header": {
+    "version": "1.0",
+    "generator": "OpenCAD_Reference_Impl_v0.1",
+    "timestamp": "2023-10-27T10:00:00Z"
+  },
+  "metadata": {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Mounting Bracket L-Type",
+    "material": "Aluminum 6061-T6",
+    "units": "mm"
+  },
+  "uct": [
+    {
+      "op_id": "op_001",
+      "type": "SKETCH",
+      "params": {
+        "plane": "XY",
+        "primitives": [
+          { "type": "RECT", "width": 50, "height": 50, "center": [0,0] }
+        ]
+      }
+    },
+    {
+      "op_id": "op_002",
+      "type": "EXTRUDE",
+      "params": {
+        "sketch_ref": "op_001",
+        "distance": 10.0,
+        "direction": [0, 0, 1]
+      }
+    },
+    {
+      "op_id": "op_003",
+      "type": "FILLET",
+      "params": {
+        "edges": ["idx_0", "idx_1"],
+        "radius": 2.5
+      }
+    }
+  ]
+}

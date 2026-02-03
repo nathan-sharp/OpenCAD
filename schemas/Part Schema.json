@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Part Definition (.ocp)",
+  "description": "Schema for the OpenCAD Part file containing geometry history and metadata.",
+  "type": "object",
+  "required": ["header", "metadata", "uct"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid", "units"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "material": { "type": "string" },
+        "units": {
+          "type": "string",
+          "enum": ["mm", "cm", "m", "in", "ft"]
+        }
+      }
+    },
+    "uct": {
+      "title": "Unified Change Tree",
+      "type": "array",
+      "description": "Ordered list of parametric operations.",
+      "items": {
+        "type": "object",
+        "required": ["op_id", "type", "params"],
+        "properties": {
+          "op_id": { "type": "string" },
+          "type": { 
+            "type": "string",
+            "enum": ["EXTRUDE", "REVOLVE", "FILLET", "CHAMFER", "BOOLEAN", "SKETCH"]
+          },
+          "params": { "type": "object" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Assembly Definition (.oca)",
+  "description": "Schema for the OpenCAD Assembly file containing instances and constraints.",
+  "type": "object",
+  "required": ["header", "metadata", "instances", "constraints"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "generator": { "type": "string" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "assembly_name": { "type": "string" }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source_uri"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique ID for this instance" },
+          "source_uri": { "type": "string", "description": "Relative or absolute path to the .ocp or .oce file" },
+          "transform": { 
+            "type": "array", 
+            "items": { "type": "number" },
+            "description": "16-element 4x4 Transformation Matrix"
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "target_a", "target_b"],
+        "properties": {
+          "type": { "type": "string", "enum": ["MATE", "ALIGN", "OFFSET", "FIXED"] },
+          "target_a": { "type": "string" },
+          "target_b": { "type": "string" }
+        }
+      }
+    }
+  }
+}

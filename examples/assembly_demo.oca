@@ -1,0 +1,34 @@
+{
+  "header": {
+    "version": "1.0",
+    "generator": "OpenCAD_Assembly_Manager_v1"
+  },
+  "metadata": {
+    "uuid": "992e8400-e29b-41d4-a716-446655442222",
+    "assembly_name": "Main Motor Housing"
+  },
+  "instances": [
+    {
+      "id": "inst_bracket_01",
+      "source_uri": "./bracket_demo.ocp",
+      "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]
+    },
+    {
+      "id": "inst_sensor_01",
+      "source_uri": "./sensor_board.oce",
+      "transform": [1,0,0,15.5, 0,1,0,20.0, 0,0,1,5.0, 0,0,0,1]
+    }
+  ],
+  "constraints": [
+    {
+      "type": "FIXED",
+      "target_a": "inst_bracket_01",
+      "target_b": "WORLD_ORIGIN"
+    },
+    {
+      "type": "MATE",
+      "target_a": "inst_bracket_01:face_5",
+      "target_b": "inst_sensor_01:board_bottom"
+    }
+  ]
+}

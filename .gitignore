@@ -1,11 +1,7 @@
-Typst build artifacts
 *.pdf
-
-OS Metadata
-.DS_StoreThumbs.db
-
-Editors
-.vscode/.idea/
-
-Logs and temp files
-*.log*.tmp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.tmp

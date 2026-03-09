@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Electrical Definition (.oce)",
+  "description": "Schema for the OpenCAD Electrical file containing netlists and component logic.",
+  "type": "object",
+  "required": ["header", "metadata", "components", "nets"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string" },
+        "generator": { "type": "string" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "board_name": { "type": "string" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref_des", "part_number"],
+        "properties": {
+          "ref_des": { "type": "string", "description": "Reference Designator e.g., R1, U2" },
+          "part_number": { "type": "string" },
+          "footprint": { "type": "string" }
+        }
+      }
+    },
+    "nets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "nodes"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g., GND, 5V, MISO" },
+          "nodes": {
+            "type": "array",
+            "items": { "type": "string", "description": "Format: REF:PIN (e.g., R1:1)" }
+          }
+        }
+      }
+    }
+  }
+}

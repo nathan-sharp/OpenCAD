@@ -13,7 +13,8 @@
   lang: "en"
 )
 
-#set heading(numbering: "1.1")
+// Start with no numbering for front matter (Foreword/Introduction)
+#set heading(numbering: none)
 
 // --- Macros for ISO Formatting ---
 #let iso-header(doc-number, part-number, title, stage) = {
@@ -49,87 +50,96 @@
 = Foreword
 ISO (the International Organization for Standardization) is a worldwide federation of national standards bodies (ISO member bodies). The work of preparing International Standards is normally carried out through ISO technical committees.
 
-This document was prepared by Technical Committee ISO/TC 184, *Automation systems and integration*, Subcommittee SC 4, *Industrial data*.
+This document was prepared by Technical Committee ISO/TC 184, _Automation systems and integration_, Subcommittee SC 4, _Industrial data_.
 
 = Introduction
-The exchange of 3D engineering data has historically been hindered by the "Silo Effect" of proprietary file formats. Existing neutral formats (e.g., ISO 10303 STEP) successfully transfer boundary representation (B-Rep) geometry but fail to preserve the "design intent" or parametric history (the "Change Tree").
+The exchange of 3D engineering data has historically been hindered by the "Silo Effect" of proprietary file formats. Existing neutral formats (e.g., ISO 10303 STEP) successfully transfer boundary representation (B-Rep) geometry but fail to preserve the "design intent" or parametric history. Furthermore, engineering disciplines such as electrical design and simulation analysis exist in disconnected, vendor-locked file ecosystems.
 
-The **OpenCAD Interchange Standard (OCIS)** defines a set of cloud-native file formats designed to preserve this parametric history and facilitate interoperability between disparate Computer-Aided Design (CAD) and Electronic Computer-Aided Design (ECAD) software suites. It leverages the WebDAV protocol to ensure data integrity in cloud storage environments.
+The *OpenCAD Interchange Standard (OCIS)* defines a set of cloud-native file formats designed to preserve parametric history and facilitate interoperability between mechanical (CAD), electrical (ECAD), and simulation (CAE) software suites. It leverages the WebDAV protocol to ensure data integrity in collaborative cloud storage environments.
 
-= 1 Scope
+// Turn ON standard ISO numbering (1, 1.1, 1.1.1) for the main body
+#set heading(numbering: "1.1")
+
+= Scope
 This document specifies the logical structure, syntax, and semantic definitions for the OpenCAD Interchange Standard (OCIS).
 
 It covers:
-+ The definition of the three core file types: Part (`.ocp`), Electrical (`.oce`), and Assembly (`.oca`).
++ The definition of the five core file types: Part (`.ocp`), Electrical (`.oce`), Assembly (`.oca`), Simulation Setup (`.ocs`), and Simulation Result (`.ocr`).
 + The schema for the Unified Change Tree (UCT), enabling lossless transfer of parametric modeling operations.
++ The definition of generic boundary conditions and loads for CAE analysis.
++ The JSON-to-Binary buffer mapping protocol for high-performance result handling.
 + The mapping of OCIS metadata to WebDAV properties for cloud integration.
-+ The definition of logical constraints and relationships between file types.
 
 It does not cover:
-+ The specific algorithms used by geometric modeling kernels to solve the features defined in the UCT.
-+ Visual rendering protocols (e.g., shaders, lighting).
+- The specific mathematical algorithms used by geometric modeling kernels to solve UCT features.
+- The mathematical solving methodologies of FEA/CFD engines.
+- Visual rendering protocols (e.g., shaders, lighting).
 
-= 2 Normative References
+= Normative References
 The following documents are referred to in the text in such a way that some or all of their content constitutes requirements of this document.
 
-* **ISO/IEC 21778:2017**, *Information technology — The JSON data interchange syntax*
-* **RFC 4918**, *HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV)*
-* **ISO 10303-21** *, *Industrial automation systems and integration — Product data representation and exchange — Part 21: Implementation methods: Clear text encoding of the exchange structure*
+- *ISO/IEC 21778:2017*, _Information technology — The JSON data interchange syntax_
+- *RFC 4918*, _HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV)_
+- *ISO 10303-21*, _Industrial automation systems and integration — Product data representation and exchange — Part 21: Implementation methods: Clear text encoding of the exchange structure_
 
-= 3 Terms and Definitions
+= Terms and Definitions
 
 #term("Change Tree", "Ordered sequence of parametric operations (features) used to construct a 3D geometric model.")
 #term("Feature", "A single parametric operation, such as an extrude, revolve, fillet, or chamfer.")
 #term("Unified Change Tree (UCT)", "The normative JSON schema defined in this standard for representing a Change Tree in a software-agnostic format.")
+#term("Computer-Aided Engineering (CAE)", "The broad usage of computer software to aid in engineering analysis tasks, encompassing Finite Element Analysis (FEA) and Computational Fluid Dynamics (CFD).")
+#term("Buffer View", "A programmatic definition detailing how to extract an array of typed data (e.g., FLOAT32) from a raw binary payload.")
 #term("WebDAV", "Set of extensions to the HTTP protocol which allows users to collaboratively edit and manage files on remote web servers.")
 
-= 4 General Architecture
+= General Architecture
 
-== 4.1 The Tri-File Structure
-The OCIS architecture decouples engineering data into three distinct semantic domains. This separation ensures that specialised tools (e.g., PCB design software) can interact with the data model without needing to parse unrelated data (e.g., mechanical geometry).
+== The Core Domain Architecture
+The OCIS architecture decouples engineering data into five distinct semantic domains. This separation ensures that specialised tools can interact with the data model without needing to parse unrelated data (e.g., a PCB routing tool does not need to parse FEA mesh data).
 
-The three file types are:
-+ **OpenCAD Part (`.ocp`)**: Contains geometric definitions, material properties, and the UCT.
-+ **OpenCAD Electrical (`.oce`)**: Contains schematic logic, netlists, and pin definitions.
-+ **OpenCAD Assembly (`.oca`)**: Contains hierarchical references, constraints, and bill of materials (BOM) data.
+The five file types are:
++ *OpenCAD Part (`.ocp`)*: Contains geometric definitions, material properties, and the UCT.
++ *OpenCAD Electrical (`.oce`)*: Contains schematic logic, netlists, and pin definitions.
++ *OpenCAD Assembly (`.oca`)*: Contains hierarchical references, kinematic constraints, and bill of materials (BOM) data.
++ *OpenCAD Simulation Setup (`.ocs`)*: Contains mesh parameters, boundary conditions, and physical loads linking to a target part or assembly.
++ *OpenCAD Simulation Result (`.ocr`)*: Contains the solved numerical data (fields) mapped to geometric meshes using binary buffers.
 
-== 4.2 Encoding
-All OCIS files shall be encoded using UTF-8. The core data structure for all file types shall be strictly compliant with **ISO/IEC 21778 (JSON)**.
+== Encoding
+All OCIS files shall be encoded using UTF-8. The core data structure for all file types shall be strictly compliant with *ISO/IEC 21778 (JSON)*.
 
-= 5 File Specifications
+= File Specifications
 
-== 5.1 The Part File (.ocp)
+== The Part File (.ocp)
 
-5.1.1 Overview
+=== Overview
 The `.ocp` file represents a single rigid body or a multi-body part defined by a unified history of operations.
 
-5.1.2 Root Structure
+=== Root Structure
 The root JSON object of an `.ocp` file shall contain the following keys:
 
 ```json
 {
   "header": { "version": "1.0", "generator": "Software_Name_vX" },
   "metadata": { "uuid": "...", "mass_units": "kg", "length_units": "mm" },
-  "uct": { ... }, // Unified Change Tree
-  "cache": { ... } // Optional B-Rep Cache (Base64 encoded STEP)
+  "uct": { ... }, 
+  "cache": { ... } 
 }
 ```
 
-5.1.3 The Unified Change Tree (UCT)
+=== The Unified Change Tree (UCT)
 The `uct` object contains an ordered array of operations. Compliant software parsers must execute these operations in order to reconstruct the geometry.
 
-**Normative Operation Types:**
-* `EXTRUDE`: Linear projection of a 2D sketch profile.
-* `REVOLVE`: Rotational projection of a 2D sketch profile around an axis.
-* `FILLET`: Rounding of a specific edge reference.
-* `BOOLEAN`: Union, Difference, or Intersection of bodies.
+_Normative Operation Types:_
+- `EXTRUDE`: Linear projection of a 2D sketch profile.
+- `REVOLVE`: Rotational projection of a 2D sketch profile around an axis.
+- `FILLET`: Rounding of a specific edge reference.
+- `BOOLEAN`: Union, Difference, or Intersection of bodies.
 
-*Example UCT Node:*
+_Example UCT Node:_
 ```json
 {
   "op_id": "feat_001",
   "type": "EXTRUDE",
-  "input": {
+  "params": {
     "sketch_ref": "sk_001",
     "distance": 15.0,
     "direction": [0, 0, 1],
@@ -138,13 +148,13 @@ The `uct` object contains an ordered array of operations. Compliant software par
 }
 ```
 
-== 5.2 The Electrical File (.oce)
+== The Electrical File (.oce)
 
-5.2.1 Overview
-The `.oce` file contains logical electrical data. It acts as the bridge between 2D schematics and 3D routing.
+=== Overview
+The `.oce` file contains logical electrical data. It acts as the bridge between 2D schematics and 3D physical routing.
 
-5.2.2 Connectivity Model
-The `.oce` file shall define connectivity using a `netlist` array.
+=== Connectivity Model
+The `.oce` file shall define connectivity using a `netlist` array connecting `components`.
 
 ```json
 {
@@ -157,24 +167,19 @@ The `.oce` file shall define connectivity using a `netlist` array.
 }
 ```
 
-== 5.3 The Assembly File (.oca)
+== The Assembly File (.oca)
 
-5.3.1 Overview
-The `.oca` file contains no geometry. It links `.ocp` and `.oce` files via relative or absolute paths (URI).
+=== Overview
+The `.oca` file contains no geometry. It links `.ocp` and `.oce` files via relative or absolute paths (URIs).
 
-5.3.2 Constraint Definitions
-Constraints define the kinematic relationship between components.
-
-*Supported Constraints:*
-* `MATE`: Coincident planes or faces.
-* `ALIGN`: Coaxial axes. 
-* `OFFSET`: Distance between entities. *
+=== Constraint Definitions
+Constraints define the kinematic relationship between components. Supported constraints include `MATE`, `ALIGN`, `OFFSET`, and `FIXED`.
 
 ```json
 {
   "instances": [
-    { "id": "inst_01", "source": "./bracket.ocp" },
-    { "id": "inst_02", "source": "./sensor.oce" }
+    { "id": "inst_01", "source_uri": "./bracket.ocp" },
+    { "id": "inst_02", "source_uri": "./sensor.oce" }
   ],
   "constraints": [
     {
@@ -186,12 +191,59 @@ Constraints define the kinematic relationship between components.
 }
 ```
 
-= 6 Cloud Integration (WebDAV Binding)
+== The Simulation Setup File (.ocs)
 
-== 6.1 Objective
-OCIS files are designed to reside on WebDAV-compliant servers. This section defines the mapping between OCIS internal metadata and WebDAV dead properties.
+=== Overview
+The `.ocs` file abstracts the setup of finite element analysis (FEA) and computational fluid dynamics (CFD) environments. It contains no geometry, but references an `.oca` or `.ocp` file and applies physical loads and boundary constraints to specific topological entities (faces, edges, vertices).
 
-== 6.2 Property Mapping
+=== Physics Setup Structure
+The `setup` object must contain `boundary_conditions` and `loads`.
+
+_Example FEA Setup:_
+```json
+{
+  "target": { "source_uri": "./motor_assembly.oca" },
+  "setup": {
+    "boundary_conditions": [
+      { "id": "bc_01", "type": "FIXED", "target_entity": "inst_01:face_bottom" }
+    ],
+    "loads": [
+      { "id": "load_01", "type": "FORCE", "target_entity": "inst_01:face_top", "vector": [0, -100, 0] }
+    ]
+  }
+}
+```
+
+== The Simulation Result File (.ocr)
+
+=== Overview
+Simulation results consist of excessively large matrices of floating-point data (millions of nodes). Storing this directly in JSON results in unacceptable parsing overhead. The `.ocr` format relies on a hybrid approach: a lightweight JSON document that maps semantic definitions to external, raw binary buffer files (`.bin`).
+
+=== Buffer Mapping Protocol
+Compliant parsers must use the `buffers` and `bufferViews` arrays to reconstruct mathematical data arrays.
+
++ *`buffers`*: Defines the URI and total byte length of an external raw binary file.
++ *`bufferViews`*: Defines a contiguous slice of a buffer, specifying the `byteOffset`, `componentType` (e.g., `FLOAT32`), and `type` (e.g., `VEC3` for 3D vectors).
+
+=== Field Definitions
+The `fields` array maps physical results (e.g., Stress, Displacement, Fluid Velocity) to specific `bufferViews`. 
+
+_Example Field Definition:_
+```json
+{
+  "name": "Von_Mises_Stress",
+  "domain": "NODE",
+  "step": 1.0,
+  "data": 2 
+}
+```
+
+= Cloud Integration (WebDAV Binding)
+
+== Objective
+OCIS files are designed to reside on WebDAV-compliant servers natively. This section defines the mapping between OCIS internal metadata and WebDAV dead properties.
+
+== Property Mapping
 Compliant servers and clients shall map internal JSON metadata to WebDAV XML properties in the `ocis:` namespace.
 
 #table(
@@ -200,29 +252,34 @@ Compliant servers and clients shall map internal JSON metadata to WebDAV XML pro
   align: horizon,
   [*OCIS JSON Field*], [*WebDAV Property*], [*Description*],
   [metadata.uuid], [ocis:uuid], [Unique Identifier],
-  [metadata.material], [ocis:material], [Material Name],
+  [metadata.material], [ocis:material], [Material Name (if .ocp)],
   [metadata.mass], [ocis:mass], [Calculated Mass],
   [header.generator], [ocis:generator], [Software used to save],
 )
 
-== 6.3 Concurrency Control
+== Concurrency Control
 To prevent "last-write-wins" data loss:
-1.  **Open:** Clients MUST issue a WebDAV `LOCK` request on the target URI before beginning an edit session.
-2.  **Save:** Clients MUST include the `If` header containing the Lock-Token during `PUT` operations.
-3.  **Close:** Clients MUST issue an `UNLOCK` request upon closing the file.
++ *Open:* Clients MUST issue a WebDAV `LOCK` request on the target URI before beginning an edit session.
++ *Save:* Clients MUST include the `If` header containing the Lock-Token during `PUT` operations.
++ *Close:* Clients MUST issue an `UNLOCK` request upon closing the file.
 
-= Annex A (Normative): JSON Schemas
+// Switch numbering style to Annex standard (A, A.1, A.2) and reset counter
+#set heading(numbering: "A.1")
+#counter(heading).update(0)
 
-*(Note: In the full standard, the complete JSON schemas would appear here. For this draft, a placeholder is provided.)*
+= JSON Schemas (Normative)
 
-== A.1 Common Header Schema
+_(Note: In the full standard, the complete JSON schemas for `.ocp`, `.oce`, `.oca`, `.ocs`, and `.ocr` shall be provided here.)_
+
+== Common Header Schema Definition
 ```json
 {
-  "$schema": "[http://json-schema.org/draft-07/schema](http://json-schema.org/draft-07/schema)",
+  "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
   "type": "object",
   "properties": {
     "version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
-    "generator": { "type": "string" }
+    "generator": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" }
   },
   "required": ["version", "generator"]
 }

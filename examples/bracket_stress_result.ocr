@@ -1,0 +1,55 @@
+{
+  "header": {
+    "version": "1.0",
+    "generator": "OpenCAD_Reference_Solver_v1"
+  },
+  "metadata": {
+    "uuid": "884e8400-e29b-41d4-a716-446655448888",
+    "source_sim": "./bracket_stress_test.ocs"
+  },
+  "buffers": [
+    {
+      "uri": "bracket_results_data.bin",
+      "byteLength": 24000
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 12000,
+      "componentType": "FLOAT32",
+      "type": "VEC3",
+      "name": "Nodal_Coordinates"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 12000,
+      "byteLength": 8000,
+      "componentType": "UINT32",
+      "type": "SCALAR",
+      "name": "Element_Connectivity"
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 20000,
+      "byteLength": 4000,
+      "componentType": "FLOAT32",
+      "type": "SCALAR",
+      "name": "Von_Mises_Stress"
+    }
+  ],
+  "mesh": {
+    "nodes": 0,
+    "elements": 1,
+    "element_type": "TETRA4"
+  },
+  "fields": [
+    {
+      "name": "Von_Mises_Stress",
+      "domain": "NODE",
+      "step": 1.0,
+      "data": 2
+    }
+  ]
+}

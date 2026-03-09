@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Result Definition (.ocr)",
+  "description": "Schema for OpenCAD Simulation Results, mapping nodes and elements to scalar/vector fields using binary buffers.",
+  "type": "object",
+  "required": ["header", "metadata", "buffers", "bufferViews", "mesh", "fields"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string" },
+        "generator": { "type": "string", "description": "Solver that generated the result" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid", "source_sim"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "source_sim": { "type": "string", "description": "URI to the .ocs file that generated this" }
+      }
+    },
+    "buffers": {
+      "type": "array",
+      "description": "Array of raw binary files containing the heavy float/int arrays.",
+      "items": {
+        "type": "object",
+        "required": ["uri", "byteLength"],
+        "properties": {
+          "uri": { "type": "string", "description": "Path to the .bin file (or base64 encoded string)" },
+          "byteLength": { "type": "integer" }
+        }
+      }
+    },
+    "bufferViews": {
+      "type": "array",
+      "description": "Defines how to read the buffers (e.g., read 1000 floats starting at byte 0).",
+      "items": {
+        "type": "object",
+        "required": ["buffer", "byteOffset", "byteLength", "componentType", "type"],
+        "properties": {
+          "buffer": { "type": "integer", "description": "Index of the buffer" },
+          "byteOffset": { "type": "integer" },
+          "byteLength": { "type": "integer" },
+          "componentType": { "type": "string", "enum": ["FLOAT32", "FLOAT64", "UINT32"] },
+          "type": { "type": "string", "enum": ["SCALAR", "VEC3", "VEC4", "MAT3", "MAT4"] }
+        }
+      }
+    },
+    "mesh": {
+      "type": "object",
+      "required": ["nodes", "elements"],
+      "properties": {
+        "nodes": { "type": "integer", "description": "Index of the bufferView containing XYZ coordinates" },
+        "elements": { "type": "integer", "description": "Index of the bufferView containing node connectivity" },
+        "element_type": { "type": "string", "enum": ["TETRA4", "HEXA8", "TRI3", "QUAD4"] }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "The actual simulation results (e.g., Stress, Displacement).",
+      "items": {
+        "type": "object",
+        "required": ["name", "domain", "data"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g., 'Von_Mises_Stress', 'Displacement'" },
+          "domain": { "type": "string", "enum": ["NODE", "ELEMENT"] },
+          "step": { "type": "number", "description": "Time step or frequency for this specific field data" },
+          "data": { "type": "integer", "description": "Index of the bufferView containing the result values" }
+        }
+      }
+    }
+  }
+}

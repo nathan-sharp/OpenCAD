@@ -1,0 +1,46 @@
+{
+  "header": {
+    "version": "1.0",
+    "generator": "OpenCAD_Sim_Manager_v1"
+  },
+  "metadata": {
+    "uuid": "773e8400-e29b-41d4-a716-446655443333",
+    "name": "Bracket Max Load Test",
+    "sim_type": "FEA_STATIC"
+  },
+  "target": {
+    "source_uri": "./motor_assembly.oca"
+  },
+  "setup": {
+    "mesh": {
+      "global_size": 2.5,
+      "element_type": "TETRA"
+    },
+    "boundary_conditions": [
+      {
+        "id": "bc_fix_01",
+        "type": "FIXED",
+        "target_entity": "inst_bracket_01:face_back"
+      }
+    ],
+    "loads": [
+      {
+        "id": "load_force_01",
+        "type": "FORCE",
+        "target_entity": "inst_bracket_01:face_top",
+        "vector": [0, -1, 0],
+        "magnitude": 500.0
+      },
+      {
+        "id": "load_gravity",
+        "type": "GRAVITY",
+        "target_entity": "GLOBAL",
+        "vector": [0, -9.81, 0]
+      }
+    ]
+  },
+  "results": {
+    "status": "UNSOLVED",
+    "data_uri": ""
+  }
+}

@@ -9,8 +9,9 @@
       "type": "object",
       "required": ["version", "generator"],
       "properties": {
-        "version": { "type": "string" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
         "generator": { "type": "string", "description": "Solver that generated the result" }
+        ,"timestamp": { "type": "string", "format": "date-time" }
       }
     },
     "metadata": {
@@ -44,7 +45,8 @@
           "byteOffset": { "type": "integer" },
           "byteLength": { "type": "integer" },
           "componentType": { "type": "string", "enum": ["FLOAT32", "FLOAT64", "UINT32"] },
-          "type": { "type": "string", "enum": ["SCALAR", "VEC3", "VEC4", "MAT3", "MAT4"] }
+          "type": { "type": "string", "enum": ["SCALAR", "VEC3", "VEC4", "MAT3", "MAT4"] },
+          "name": { "type": "string" }
         }
       }
     },

@@ -5,3 +5,6 @@ Thumbs.db
 .idea/
 *.log
 *.tmp
+.venv/
+__pycache__/
+dist/

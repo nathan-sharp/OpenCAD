@@ -1,49 +1,76 @@
-Contributing to the OpenCAD Interchange Standard (OCIS)
+# Contributing To OpenCAD
 
-Thank you for your interest in contributing to the OpenCAD Standard. This project operates as an open specification development group. We welcome input from CAD developers, electrical engineers, and technical writers.
+Thank you for contributing to the OpenCAD Interchange Standard (OCIS). This repository is an open working draft for an engineering data interchange standard. Contributions are welcome from CAD, ECAD, CAE, interoperability, and technical writing contributors.
 
-Intellectual Property & Licensing
+## Before You Contribute
 
-By contributing to this repository, you agree that your contributions will be licensed under the Creative Commons CC0 1.0 Universal license.
+- Read [README.md](README.md) for the current draft status.
+- Read [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before participating.
+- Read [GOVERNANCE.md](GOVERNANCE.md) for how proposals are reviewed and adopted.
 
-Note: If you are contributing on behalf of an employer (e.g., an Autodesk, PTC, or Dassault Systemes employee), please ensure you have the authorization to contribute to open standards.
+If you are contributing on behalf of an employer, confirm that you are authorized to contribute under the repository licensing terms.
 
-How to Contribute
+## Licensing And IP
 
-1. Proposing Changes to the Specification
+By contributing to this repository, you agree that your contribution is licensed under the same license as the files you modify:
 
-The specification text is written in Typst.
+- `specification/` files: CC BY-SA 4.0
+- `schemas/`, `examples/`, scripts, workflows, and repository support files: MIT
 
-Typos/Grammar: Submit a Pull Request (PR) directly fixing the .typ file.
+If you add a new top-level content area with a different license, document it in [LICENSES.md](LICENSES.md) within the same pull request.
 
-Substantial Changes: Please open an Issue first titled RFC: [Topic] (Request for Comment). Discuss the change before writing the spec text.
+Do not submit material that you do not have the right to contribute.
 
-2. Technical Definitions (JSON Schemas)
+## Change Types
 
-We strictly version our JSON schemas.
+### Editorial Changes
 
-Schemas are located in the /schemas directory.
+Minor wording, formatting, or typo fixes can be submitted directly as pull requests.
 
-If you change a schema, you must update the corresponding example file in /examples to prove the change is valid.
+### Schema Or Semantic Changes
 
-3. Reporting Issues
+For changes that alter the meaning of the standard, open an issue titled `RFC: <topic>` before writing the final patch. Examples include:
 
-Use the Issue Tracker to report ambiguities in the standard or bugs in the reference implementation.
+- new operation types
+- renamed fields
+- schema constraint changes
+- interoperability behavior changes
 
-Tag your issue with [Part], [Electrical], or [Assembly] to help us triage.
+### Example Set Changes
 
-Development Process
+Examples in `examples/` are part of the public review surface. If you change a schema, update the corresponding example files so the set remains self-consistent and valid.
 
-Fork the repo.
+## Validation Requirements
 
-Create a branch: git checkout -b feature/my-new-feature
+Before opening a pull request, run:
 
-Commit your changes: git commit -am 'Add some feature'
+`pip install -r requirements.txt`
 
-Push to the branch: git push origin feature/my-new-feature
+`python scripts/validate_repo.py`
 
-Submit a pull request.
+Pull requests that change schemas or examples should not be merged unless validation passes.
 
-Code of Conduct
+## Pull Request Expectations
 
-Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms. We prioritize professional, constructive technical discourse.
+- Keep changes focused and explain the problem being solved.
+- Describe whether the change is editorial, additive, or breaking.
+- Update [CHANGELOG.md](CHANGELOG.md) for any substantive repository-facing change.
+- Preserve example resolvability. Relative references in examples must point to files that exist in the repo.
+
+## Reporting Issues
+
+Use GitHub Issues to report ambiguities, schema bugs, or interoperability problems. Prefix issue titles when helpful, for example:
+
+- `[Part]`
+- `[Electrical]`
+- `[Assembly]`
+- `[Simulation]`
+- `[Governance]`
+
+## Development Process
+
+1. Fork the repository.
+2. Create a topic branch.
+3. Make focused changes.
+4. Run validation.
+5. Open a pull request with context and rationale.

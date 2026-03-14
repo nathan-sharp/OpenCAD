@@ -1,6 +1,6 @@
 {
   "header": {
-    "version": "1.0",
+    "version": "0.1",
     "generator": "OpenCAD_Reference_Solver_v1"
   },
   "metadata": {
@@ -9,7 +9,7 @@
   },
   "buffers": [
     {
-      "uri": "bracket_results_data.bin",
+      "uri": "./bracket_results_data.bin",
       "byteLength": 24000
     }
   ],

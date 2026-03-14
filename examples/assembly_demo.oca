@@ -1,11 +1,11 @@
 {
   "header": {
-    "version": "1.0",
+    "version": "0.1",
     "generator": "OpenCAD_Assembly_Manager_v1"
   },
   "metadata": {
     "uuid": "992e8400-e29b-41d4-a716-446655442222",
-    "assembly_name": "Main Motor Housing"
+    "assembly_name": "Bracket Sensor Assembly"
   },
   "instances": [
     {
@@ -15,7 +15,7 @@
     },
     {
       "id": "inst_sensor_01",
-      "source_uri": "./sensor_board.oce",
+      "source_uri": "./wiring_demo.oce",
       "transform": [1,0,0,15.5, 0,1,0,20.0, 0,0,1,5.0, 0,0,0,1]
     }
   ],

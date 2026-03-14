@@ -29,6 +29,8 @@
   #datetime.today().display()
 ]
 
+#align(center)[_Historical proposal retained for context. The active normative draft is `specification/Working Draft.typ`._]
+
 #pagebreak()
 
 // --- Content ---

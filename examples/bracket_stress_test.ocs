@@ -1,6 +1,6 @@
 {
   "header": {
-    "version": "1.0",
+    "version": "0.1",
     "generator": "OpenCAD_Sim_Manager_v1"
   },
   "metadata": {
@@ -9,7 +9,7 @@
     "sim_type": "FEA_STATIC"
   },
   "target": {
-    "source_uri": "./motor_assembly.oca"
+    "source_uri": "./assembly_demo.oca"
   },
   "setup": {
     "mesh": {

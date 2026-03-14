@@ -9,8 +9,9 @@
       "type": "object",
       "required": ["version", "generator"],
       "properties": {
-        "version": { "type": "string" },
-        "generator": { "type": "string" }
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
       }
     },
     "metadata": {

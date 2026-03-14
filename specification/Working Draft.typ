@@ -269,18 +269,343 @@ To prevent "last-write-wins" data loss:
 
 = JSON Schemas (Normative)
 
-_(Note: In the full standard, the complete JSON schemas for `.ocp`, `.oce`, `.oca`, `.ocs`, and `.ocr` shall be provided here.)_
+The following schemas define the current normative OCIS working draft data model for version `0.1`.
 
-== Common Header Schema Definition
+== Part Schema (`.ocp`)
 ```json
 {
-  "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Part Definition (.ocp)",
+  "description": "Schema for the OpenCAD Part file containing geometry history and metadata.",
   "type": "object",
+  "required": ["header", "metadata", "uct"],
   "properties": {
-    "version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
-    "generator": { "type": "string" },
-    "timestamp": { "type": "string", "format": "date-time" }
-  },
-  "required": ["version", "generator"]
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid", "units"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "material": { "type": "string" },
+        "units": {
+          "type": "string",
+          "enum": ["mm", "cm", "m", "in", "ft"]
+        }
+      }
+    },
+    "uct": {
+      "title": "Unified Change Tree",
+      "type": "array",
+      "description": "Ordered list of parametric operations.",
+      "items": {
+        "type": "object",
+        "required": ["op_id", "type", "params"],
+        "properties": {
+          "op_id": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["EXTRUDE", "REVOLVE", "FILLET", "CHAMFER", "BOOLEAN", "SKETCH"]
+          },
+          "params": { "type": "object" }
+        }
+      }
+    }
+  }
+}
+```
+
+== Electrical Schema (`.oce`)
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Electrical Definition (.oce)",
+  "description": "Schema for the OpenCAD Electrical file containing netlists and component logic.",
+  "type": "object",
+  "required": ["header", "metadata", "components", "nets"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "board_name": { "type": "string" }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ref_des", "part_number"],
+        "properties": {
+          "ref_des": { "type": "string", "description": "Reference Designator e.g., R1, U2" },
+          "part_number": { "type": "string" },
+          "footprint": { "type": "string" }
+        }
+      }
+    },
+    "nets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "nodes"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g., GND, 5V, MISO" },
+          "nodes": {
+            "type": "array",
+            "items": { "type": "string", "description": "Format: REF:PIN (e.g., R1:1)" }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+== Assembly Schema (`.oca`)
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Assembly Definition (.oca)",
+  "description": "Schema for the OpenCAD Assembly file containing instances and constraints.",
+  "type": "object",
+  "required": ["header", "metadata", "instances", "constraints"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "assembly_name": { "type": "string" }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source_uri"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique ID for this instance" },
+          "source_uri": { "type": "string", "description": "Relative or absolute path to the .ocp or .oce file" },
+          "transform": {
+            "type": "array",
+            "items": { "type": "number" },
+            "minItems": 16,
+            "maxItems": 16,
+            "description": "16-element 4x4 Transformation Matrix"
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "target_a", "target_b"],
+        "properties": {
+          "type": { "type": "string", "enum": ["MATE", "ALIGN", "OFFSET", "FIXED"] },
+          "target_a": { "type": "string" },
+          "target_b": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+```
+
+== Simulation Setup Schema (`.ocs`)
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Simulation Definition (.ocs)",
+  "description": "Schema for the OpenCAD Simulation file containing FEA/CFD setup, loads, and boundary conditions.",
+  "type": "object",
+  "required": ["header", "metadata", "target", "setup"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid", "sim_type"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "name": { "type": "string" },
+        "sim_type": {
+          "type": "string",
+          "enum": ["FEA_STATIC", "FEA_DYNAMIC", "CFD_STEADY", "CFD_TRANSIENT", "THERMAL"]
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "description": "The geometric model to be simulated.",
+      "required": ["source_uri"],
+      "properties": {
+        "source_uri": { "type": "string", "description": "URI to the .oca or .ocp file" },
+        "configuration": { "type": "string", "description": "Optional assembly state/configuration name" }
+      }
+    },
+    "setup": {
+      "type": "object",
+      "properties": {
+        "mesh": {
+          "type": "object",
+          "properties": {
+            "global_size": { "type": "number" },
+            "element_type": { "type": "string", "enum": ["TETRA", "HEXA", "POLY"] }
+          }
+        },
+        "boundary_conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "target_entity"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string", "enum": ["FIXED", "PINNED", "SYMMETRY", "WALL_NO_SLIP", "VELOCITY_INLET", "PRESSURE_OUTLET"] },
+              "target_entity": { "type": "string", "description": "Instance/Face ID from the target file" },
+              "params": { "type": "object" }
+            }
+          }
+        },
+        "loads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "target_entity"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": { "type": "string", "enum": ["FORCE", "PRESSURE", "GRAVITY", "TEMPERATURE", "HEAT_FLUX"] },
+              "target_entity": { "type": "string" },
+              "vector": { "type": "array", "items": { "type": "number" } },
+              "magnitude": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "results": {
+      "type": "object",
+      "description": "Pointers to heavy result data files generated by solvers.",
+      "properties": {
+        "status": { "type": "string", "enum": ["UNSOLVED", "SOLVED", "FAILED"] },
+        "data_uri": { "type": "string", "description": "Path to .vtk, .h5, or other result format" }
+      }
+    }
+  }
+}
+```
+
+== Simulation Result Schema (`.ocr`)
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OpenCAD Result Definition (.ocr)",
+  "description": "Schema for OpenCAD Simulation Results, mapping nodes and elements to scalar/vector fields using binary buffers.",
+  "type": "object",
+  "required": ["header", "metadata", "buffers", "bufferViews", "mesh", "fields"],
+  "properties": {
+    "header": {
+      "type": "object",
+      "required": ["version", "generator"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Solver that generated the result" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["uuid", "source_sim"],
+      "properties": {
+        "uuid": { "type": "string", "format": "uuid" },
+        "source_sim": { "type": "string", "description": "URI to the .ocs file that generated this" }
+      }
+    },
+    "buffers": {
+      "type": "array",
+      "description": "Array of raw binary files containing the heavy float/int arrays.",
+      "items": {
+        "type": "object",
+        "required": ["uri", "byteLength"],
+        "properties": {
+          "uri": { "type": "string", "description": "Path to the .bin file (or base64 encoded string)" },
+          "byteLength": { "type": "integer" }
+        }
+      }
+    },
+    "bufferViews": {
+      "type": "array",
+      "description": "Defines how to read the buffers (e.g., read 1000 floats starting at byte 0).",
+      "items": {
+        "type": "object",
+        "required": ["buffer", "byteOffset", "byteLength", "componentType", "type"],
+        "properties": {
+          "buffer": { "type": "integer", "description": "Index of the buffer" },
+          "byteOffset": { "type": "integer" },
+          "byteLength": { "type": "integer" },
+          "componentType": { "type": "string", "enum": ["FLOAT32", "FLOAT64", "UINT32"] },
+          "type": { "type": "string", "enum": ["SCALAR", "VEC3", "VEC4", "MAT3", "MAT4"] },
+          "name": { "type": "string" }
+        }
+      }
+    },
+    "mesh": {
+      "type": "object",
+      "required": ["nodes", "elements"],
+      "properties": {
+        "nodes": { "type": "integer", "description": "Index of the bufferView containing XYZ coordinates" },
+        "elements": { "type": "integer", "description": "Index of the bufferView containing node connectivity" },
+        "element_type": { "type": "string", "enum": ["TETRA4", "HEXA8", "TRI3", "QUAD4"] }
+      }
+    },
+    "fields": {
+      "type": "array",
+      "description": "The actual simulation results (e.g., Stress, Displacement).",
+      "items": {
+        "type": "object",
+        "required": ["name", "domain", "data"],
+        "properties": {
+          "name": { "type": "string", "description": "e.g., 'Von_Mises_Stress', 'Displacement'" },
+          "domain": { "type": "string", "enum": ["NODE", "ELEMENT"] },
+          "step": { "type": "number", "description": "Time step or frequency for this specific field data" },
+          "data": { "type": "integer", "description": "Index of the bufferView containing the result values" }
+        }
+      }
+    }
+  }
 }
 ```

@@ -7,13 +7,16 @@
   "properties": {
     "header": {
       "type": "object",
+      "required": ["version", "generator"],
       "properties": {
-        "version": { "type": "string" },
-        "generator": { "type": "string" }
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+$", "description": "OCIS Version" },
+        "generator": { "type": "string", "description": "Name of the software that created this file" },
+        "timestamp": { "type": "string", "format": "date-time" }
       }
     },
     "metadata": {
       "type": "object",
+      "required": ["uuid"],
       "properties": {
         "uuid": { "type": "string", "format": "uuid" },
         "assembly_name": { "type": "string" }
@@ -30,6 +33,8 @@
           "transform": { 
             "type": "array", 
             "items": { "type": "number" },
+            "minItems": 16,
+            "maxItems": 16,
             "description": "16-element 4x4 Transformation Matrix"
           }
         }

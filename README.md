@@ -1,43 +1,74 @@
 # OpenCAD Interchange Standard (OCIS)
 
-### The Mission
+OpenCAD is an open interchange standard for cloud-native engineering data. The project is currently maintained as a public working draft and is not an ISO International Standard.
 
-The engineering world is fragmented. Proprietary file formats (.ipt, .sldprt, .f3d) lock design and simulation data into isolated silos.
+## Status
 
-OpenCAD (OCIS) is a proposal for an open, cloud-native ISO standard. It aims to unify mechanical CAD, electrical design (ECAD), and simulation (CAE) workflows into a single, lossless ecosystem.
+- Repository draft version: `0.1`
+- Current normative draft: `specification/Working Draft.typ`
+- Historical background document: `specification/Proposal.typ`
+- Maturity: Working Draft suitable for public review and prototype validation
 
-### Architecture
+If you cite the project publicly, refer to it as the *OpenCAD Interchange Standard (OCIS) Working Draft*.
 
-Instead of massive, monolithic binary files, OCIS uses a modular approach separating data into five distinct, semantic domains:
+## Mission
+
+Proprietary engineering formats fragment mechanical CAD, electrical design, and simulation data into incompatible silos. OCIS defines a modular, text-based interchange model intended to preserve design intent, enable validation, and support cloud workflows without vendor lock-in.
+
+## Architecture
+
+OCIS separates engineering data into five semantic domains instead of one monolithic binary file:
 
 | Extension | Name | Description |
-| -------- | ------- | ------- |
-| .ocp | OpenCAD Part | Defines geometry and the Unified Change Tree (parametric history/recipe). |
-| .oce | OpenCAD Electrical | Defines 2D schematics, PCB layouts, netlists, and harness routing. |
-| .oca | OpenCAD Assembly | Logic-only file defining constraints, positioning, and BOMs. |
-| .ocs | OpenCAD Sim Setup | Defines FEA/CFD physics (meshes, boundary conditions, loads).
-| .ocr | OpenCAD Result | Lightweight JSON mapping to raw binary buffers for heavy simulation output (stress, displacement) without proprietary lock-in. |
+| --------- | ---- | ----------- |
+| `.ocp` | OpenCAD Part | Geometry, metadata, and unified parametric history. |
+| `.oce` | OpenCAD Electrical | Schematics, netlists, components, and electrical connectivity. |
+| `.oca` | OpenCAD Assembly | Instance references, transforms, constraints, and BOM logic. |
+| `.ocs` | OpenCAD Simulation Setup | Solver setup, meshes, loads, and boundary conditions. |
+| `.ocr` | OpenCAD Result | Result metadata mapped to external binary buffers. |
 
-### Roadmap to ISO
+## Repository Layout
 
-We are currently in the Working Draft phase targeting ISO TC 184 (Industrial data).
+- `schemas/`: Draft JSON Schemas for the five OCIS formats
+- `examples/`: Reference example files intended to validate against the schemas
+- `specification/`: Typst source for the proposal and working draft documents
 
-- [ ] Phase 1: Specification (Current) - Defining the JSON schemas for the 5 core formats.
-- [ ] Phase 2: Proof of Concept - Developing reference parsers in Python/C++.
-- [ ] Phase 3: Committee Draft - Submission to ISO for review.
-- [ ] Phase 4: Standardization - Official publication.
+## Validation
 
-### Contributing
+The repository includes a validation script for public review and release gating.
 
-This is an open initiative! We are looking for input from:
+1. Install Python dependencies:
+	`pip install -r requirements.txt`
+2. Run repository validation:
+	`python scripts/validate_repo.py`
 
-- CAD Developers (Geometry schemas)
-- Electrical Engineers (ECAD/Netlist routing)
-- Simulation Engineers (FEA/CFD boundary conditions)
+Validation checks JSON syntax, schema compliance, and cross-file references used by the example set.
 
-Please read our CONTRIBUTING.md for details on how to propose changes, report issues, and format JSON schemas.
+## Building The Draft
 
-### License
+The specification sources are written in Typst.
 
-- The Specification Text (.typ files) is licensed under Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
-- Reference code, schemas, and examples are licensed under the MIT License.
+1. Install Typst from https://typst.app/
+2. Compile the working draft:
+	`typst compile "specification/Working Draft.typ" dist/ocis-working-draft.pdf`
+
+## Roadmap
+
+- [x] Working Draft text and schema set published for review
+- [x] Reference examples included for each file type
+- [x] Repository validation added for schemas and examples
+- [ ] Reference parsers in Python/C++
+- [ ] Multi-implementation proof of interoperability
+- [ ] Formal standards sponsorship and committee submission
+
+## Contributing
+
+Contributions are welcome from CAD, ECAD, CAE, interoperability, and technical writing contributors. See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [GOVERNANCE.md](GOVERNANCE.md) before opening a substantial proposal.
+
+## Licensing
+
+- Specification source files in `specification/` are licensed under CC BY-SA 4.0.
+- Schemas, examples, scripts, and repository support files are licensed under MIT.
+- Contribution terms follow the license of the files being modified unless explicitly stated otherwise.
+
+See [LICENSE](LICENSE) and [LICENSES.md](LICENSES.md) for the repository licensing policy.

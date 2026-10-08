@@ -57,7 +57,8 @@ The specification sources are written in Typst.
 - [x] Working Draft text and schema set published for review
 - [x] Reference examples included for each file type
 - [x] Repository validation added for schemas and examples
-- [ ] Reference parsers in Python/C++
+- [x] Reference parsers in Python
+- [x] Reference parsers in C++
 - [ ] Multi-implementation proof of interoperability
 - [ ] Formal standards sponsorship and committee submission
 

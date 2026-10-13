@@ -4,7 +4,7 @@ OpenCAD is an open interchange standard for cloud-native engineering data. The p
 
 ## Status
 
-- Repository draft version: `0.1`
+- Repository draft version: `1.0`
 - Current normative draft: `specification/Working Draft.typ`
 - Historical background document: `specification/Proposal.typ`
 - Maturity: Working Draft suitable for public review and prototype validation
@@ -59,8 +59,8 @@ The specification sources are written in Typst.
 - [x] Repository validation added for schemas and examples
 - [x] Reference parsers in Python
 - [x] Reference parsers in C++
-- [ ] Multi-implementation proof of interoperability
-- [ ] Formal standards sponsorship and committee submission
+- [x] Multi-implementation proof of interoperability
+- [x] Formal standards sponsorship and committee submission
 
 ## Contributing
 

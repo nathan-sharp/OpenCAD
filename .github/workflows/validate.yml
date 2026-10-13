@@ -23,3 +23,14 @@ jobs:
 
       - name: Validate repository
         run: python scripts/validate_repo.py
+
+      - name: Build and test C++ parser
+        run: |
+          cd parsers/cpp
+          mkdir build && cd build
+          cmake ..
+          make
+          ctest --output-on-failure
+
+      - name: Test interoperability
+        run: python scripts/test_interop.py

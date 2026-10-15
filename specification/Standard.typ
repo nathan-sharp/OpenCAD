@@ -41,7 +41,7 @@
 
 // --- DOCUMENT START ---
 
-#iso-header("ISO/WD 44001", "1", "Industrial automation systems and integration — OpenCAD Interchange Standard (OCIS)", "20.00 (Working Draft)")
+#iso-header("ISO/WD 44001", "1", "Industrial automation systems and integration — OpenCAD Interchange Standard (OCIS)", "1.0 (Release version)")
 
 // --- Table of Contents ---
 #outline(indent: auto)
@@ -269,7 +269,7 @@ To prevent "last-write-wins" data loss:
 
 = JSON Schemas (Normative)
 
-The following schemas define the current normative OCIS working draft data model for version `0.1`.
+The following schemas define the current normative OCIS working draft data model for version `1.0`.
 
 == Part Schema (`.ocp`)
 ```json

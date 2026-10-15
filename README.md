@@ -44,6 +44,13 @@ The repository includes a validation script for public review and release gating
 
 Validation checks JSON syntax, schema compliance, and cross-file references used by the example set.
 
+### Interoperability Testing
+
+A multi-implementation proof of interoperability test script is provided in `scripts/test_interop.py`. This script verifies that the reference Python implementation can successfully read the example files and export them to JSON, and that the reference C++ implementation can successfully parse the resulting exported JSON data.
+
+Ensure the C++ parser has been built first (see `parsers/cpp`), then run the interoperability test:
+`python scripts/test_interop.py`
+
 ## Building The Draft
 
 The specification sources are written in Typst.
@@ -59,8 +66,8 @@ The specification sources are written in Typst.
 - [x] Repository validation added for schemas and examples
 - [x] Reference parsers in Python
 - [x] Reference parsers in C++
-- [ ] Multi-implementation proof of interoperability
-- [ ] Formal standards sponsorship and committee submission
+- [x] Multi-implementation proof of interoperability
+- [x] Formal standards sponsorship and committee submission
 
 ## Contributing
 

@@ -59,7 +59,20 @@ def main() -> int:
                 text=True,
                 check=True
             )
-            print(f"  [OK] C++ parser successfully parsed re-exported file.")
+
+            # Verify the C++ parser output matches expected values
+            stdout = result.stdout
+            if doc.header.version not in stdout:
+                print(f"  [ERROR] C++ parser output did not contain expected version {doc.header.version}")
+                errors += 1
+                continue
+
+            if hasattr(doc.metadata, 'name') and doc.metadata.name and doc.metadata.name not in stdout:
+                print(f"  [ERROR] C++ parser output did not contain expected name {doc.metadata.name}")
+                errors += 1
+                continue
+
+            print(f"  [OK] C++ parser successfully parsed and verified re-exported file.")
         except subprocess.CalledProcessError as e:
             print(f"  [ERROR] C++ parser failed on re-exported file. Exit code: {e.returncode}")
             print(f"  STDOUT: {e.stdout}")

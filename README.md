@@ -59,8 +59,8 @@ The specification sources are written in Typst.
 - [x] Repository validation added for schemas and examples
 - [x] Reference parsers in Python
 - [x] Reference parsers in C++
-- [ ] Multi-implementation proof of interoperability
-- [ ] Formal standards sponsorship and committee submission
+- [x] Multi-implementation proof of interoperability
+- [x] Formal standards sponsorship and committee submission
 
 ## Contributing
 

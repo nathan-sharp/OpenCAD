@@ -28,7 +28,7 @@ REQUIRED_FILES = [
     ROOT / "CHANGELOG.md",
     ROOT / "VERSION",
     ROOT / ".github" / "workflows" / "validate.yml",
-    ROOT / "specification" / "Working Draft.typ",
+    ROOT / "specification" / "Standard.typ",
 ]
 
 

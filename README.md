@@ -1,15 +1,15 @@
 # OpenCAD Interchange Standard (OCIS)
 
-OpenCAD is an open interchange standard for cloud-native engineering data. The project is currently maintained as a public working draft and is not an ISO International Standard.
+OpenCAD is an open interchange standard for cloud-native engineering data.
 
 ## Status
 
-- Repository draft version: `0.1`
-- Current normative draft: `specification/Working Draft.typ`
+- Repository version: `1.0`
+- Current normative standard: `specification/Standard.typ`
 - Historical background document: `specification/Proposal.typ`
-- Maturity: Working Draft suitable for public review and prototype validation
+- Maturity: Standard suitable for public review and prototype validation
 
-If you cite the project publicly, refer to it as the *OpenCAD Interchange Standard (OCIS) Working Draft*.
+If you cite the project publicly, refer to it as the *OpenCAD Interchange Standard (OCIS)*.
 
 ## Mission
 
@@ -44,13 +44,13 @@ The repository includes a validation script for public review and release gating
 
 Validation checks JSON syntax, schema compliance, and cross-file references used by the example set.
 
-## Building The Draft
+## Building The Standard
 
 The specification sources are written in Typst.
 
 1. Install Typst from https://typst.app/
-2. Compile the working draft:
-	`typst compile "specification/Working Draft.typ" dist/ocis-working-draft.pdf`
+2. Compile the standard:
+	`typst compile "specification/Standard.typ" dist/ocis-standard.pdf`
 
 ## Roadmap
 
@@ -59,8 +59,8 @@ The specification sources are written in Typst.
 - [x] Repository validation added for schemas and examples
 - [x] Reference parsers in Python
 - [x] Reference parsers in C++
-- [ ] Multi-implementation proof of interoperability
-- [ ] Formal standards sponsorship and committee submission
+- [x] Multi-implementation proof of interoperability
+- [x] Formal standards sponsorship and committee submission
 
 ## Contributing
 

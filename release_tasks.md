@@ -3,6 +3,9 @@
 This project requires a few steps before it can be fully released. The remaining tasks below have been broken down from the project's roadmap:
 
 ## Remaining Release Tasks
+- [x] Implement payload data extraction in C++ reference parser.
+- [ ] Enhance C++ reference parser to validate payload against schema.
+- [ ] Create documentation for C++ parser usage.
 
 ## Completed Release Tasks
 - [x] Formal standards sponsorship and committee submission: Draft the proposals for standards bodies to accept OCIS.

@@ -16,6 +16,15 @@ int main(int argc, char** argv) {
             std::cout << "Name: " << *doc->metadata.name << std::endl;
         }
         std::cout << "UUID: " << doc->metadata.uuid << std::endl;
+
+        std::cout << "Payload keys: ";
+        for (auto& el : doc->payload.items()) {
+            if (el.key() != "header" && el.key() != "metadata") {
+                std::cout << el.key() << " ";
+            }
+        }
+        std::cout << std::endl;
+
         return 0;
     } else {
         std::cerr << "Failed to parse: " << argv[1] << std::endl;
